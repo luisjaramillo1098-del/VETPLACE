@@ -2,64 +2,36 @@
 <html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VetPlace - Generador de Recetas</title>
+    <title>VetPlace - Generador de Recetas PRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         /* Diseño Premium y Moderno Web */
         body { 
-            font-family: 'Nunito', sans-serif; 
-            padding: 30px 15px; 
-            max-width: 850px; 
-            margin: auto; 
+            font-family: 'Nunito', sans-serif; padding: 30px 15px; max-width: 850px; margin: auto; 
             background: linear-gradient(135deg, #16a085 0%, #9b59b6 50%, #ff66c4 100%);
-            background-attachment: fixed;
-            min-height: 100vh;
-            color: #2c3e50;
+            background-attachment: fixed; min-height: 100vh; color: #2c3e50;
         }
         
         .seccion { 
-            background: rgba(255, 255, 255, 0.98); 
-            padding: 30px; 
-            border-radius: 20px; 
-            margin-bottom: 25px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-            border-top: 6px solid #27c4b4;
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.98); padding: 30px; border-radius: 20px; margin-bottom: 25px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15); border-top: 6px solid #27c4b4; backdrop-filter: blur(10px);
         }
 
         input, select, button { 
-            display: block; 
-            width: 100%; 
-            margin-bottom: 15px; 
-            padding: 12px 16px; 
-            box-sizing: border-box; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 10px; 
-            font-size: 14px;
-            font-family: 'Nunito', sans-serif;
-            background-color: #f8fafd;
-            color: #2c3e50;
-            transition: all 0.3s ease;
+            display: block; width: 100%; margin-bottom: 15px; padding: 12px 16px; box-sizing: border-box; 
+            border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; font-family: 'Nunito', sans-serif;
+            background-color: #f8fafd; color: #2c3e50; transition: all 0.3s ease;
         }
-        input:focus, select:focus { 
-            border-color: #27c4b4; 
-            background-color: #ffffff; 
-            outline: none; 
-            box-shadow: 0 0 10px rgba(39, 196, 180, 0.2); 
-        }
+        input:focus, select:focus { border-color: #27c4b4; background-color: #ffffff; outline: none; box-shadow: 0 0 10px rgba(39, 196, 180, 0.2); }
         
         .fila { display: flex; gap: 15px; margin-bottom: 5px; }
         .fila > div { flex: 1; }
         .fila-doble { flex: 2 !important; }
         
-        @media (max-width: 650px) {
-            .fila { flex-direction: column; gap: 0px; }
-            .contenedor-botones { flex-direction: column; }
-        }
+        @media (max-width: 650px) { .fila { flex-direction: column; gap: 0px; } .contenedor-botones { flex-direction: column; } }
 
         .contenedor-botones { display: flex; gap: 15px; margin-top: 25px; flex-wrap: wrap; }
         .btn-generar, .btn-compartir, .btn-img-descargar, .btn-img-compartir {
@@ -70,148 +42,71 @@
         .btn-generar:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(26, 188, 156, 0.5);}
         .btn-compartir { background: linear-gradient(135deg, #2ecc71, #27ae60); box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);}
         .btn-compartir:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(46, 204, 113, 0.5);}
-        
-        /* Estilos para los nuevos botones de imagen */
         .btn-img-descargar { background: linear-gradient(135deg, #f39c12, #e67e22); box-shadow: 0 6px 15px rgba(230, 126, 34, 0.4);}
         .btn-img-descargar:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(230, 126, 34, 0.5);}
         .btn-img-compartir { background: linear-gradient(135deg, #3498db, #2980b9); box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);}
         .btn-img-compartir:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(52, 152, 219, 0.5);}
 
-        .btn-agregar { 
-            background-color: #f1f2f6; color: #8e44ad; border: 2px dashed #c49aef; 
-            font-weight: 700; cursor: pointer; font-size: 15px; border-radius: 10px; padding: 12px;
-        }
+        .btn-agregar { background-color: #f1f2f6; color: #8e44ad; border: 2px dashed #c49aef; font-weight: 700; cursor: pointer; font-size: 15px; border-radius: 10px; padding: 12px; }
         .btn-agregar:hover { background-color: #f8f0ff; border-color: #8e44ad; }
 
         .acciones-lista { position: absolute; right: 15px; top: 15px; display: flex; gap: 8px; }
         .btn-pequeno { padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 800; border: none; color: white; transition: 0.2s;}
-        .btn-edit { background-color: #2ecc71; box-shadow: 0 2px 5px rgba(46,204,113,0.3);} 
-        .btn-edit:hover { background-color: #27ae60; }
-        .btn-eliminar { background-color: #e74c3c; box-shadow: 0 2px 5px rgba(231,76,60,0.3);} 
-        .btn-eliminar:hover { background-color: #c0392b; }
+        .btn-edit { background-color: #2ecc71; box-shadow: 0 2px 5px rgba(46,204,113,0.3);} .btn-edit:hover { background-color: #27ae60; }
+        .btn-eliminar { background-color: #e74c3c; box-shadow: 0 2px 5px rgba(231,76,60,0.3);} .btn-eliminar:hover { background-color: #c0392b; }
 
         ul { list-style-type: none; padding: 0; margin-top: 20px; }
         li { background: #ffffff; margin-bottom: 15px; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); position: relative; border: 1px solid #edf2f7; border-left: 6px solid #27c4b4;}
-        
         label { font-weight: 800; font-size: 12px; color: #7f8c8d; margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.8px;}
         
         .header-app { text-align: center; display: flex; flex-direction: column; align-items: center; background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 30px; position: relative; backdrop-filter: blur(10px);}
         .header-app h2 { color: #27c4b4; margin: 15px 0 0 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;}
         .btn-logo { cursor: pointer; color: #a29bfe; font-size: 13px; font-weight: 700; background: #f8f9fa; border: 1px solid #dcdde1; padding: 8px 16px; border-radius: 20px; display: inline-block; margin-top: 15px; transition: 0.3s;}
         .btn-logo:hover { background: #e0d9ff; color: #6c5ce7; border-color: #a29bfe;}
-
         h3 { color: #2c3e50; margin-top: 0; border-bottom: 2px solid #edf2f7; padding-bottom: 12px; font-size: 18px; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;}
 
         .input-otro { border: 2px solid #ff66c4; display: none; background: #fff9fd; margin-top: 5px;}
-        
         .resaltado-container { background: #f0fdfa; border: 1px solid #14b8a6; padding: 15px; border-radius: 10px; margin-bottom: 15px;}
         .resaltado-container label { color: #0d9488; }
         .resaltado { border: 2px solid #14b8a6; background-color: #ffffff; color: #0f766e; font-weight: 700; font-size: 15px; margin-bottom: 0;}
 
         /* --- ESTILOS SECCIÓN SOPORTE --- */
-        .soporte-container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            border-radius: 15px;
-            margin-top: 40px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            border: 2px dashed #a29bfe;
-            backdrop-filter: blur(5px);
-        }
-        .soporte-container h4 {
-            color: #6c5ce7;
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-size: 16px;
-            font-weight: 800;
-        }
-        .fila-soporte {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .btn-soporte {
-            text-decoration: none;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-weight: 800;
-            font-size: 14px;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .soporte-container { background: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 15px; margin-top: 40px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 2px dashed #a29bfe; backdrop-filter: blur(5px); }
+        .soporte-container h4 { color: #6c5ce7; margin-top: 0; margin-bottom: 15px; font-size: 16px; font-weight: 800; }
+        .fila-soporte { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .btn-soporte { text-decoration: none; padding: 12px 20px; border-radius: 10px; font-weight: 800; font-size: 14px; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
         .btn-soporte.wa { background-color: #e8f9f0; color: #27ae60; border: 2px solid #2ecc71; }
         .btn-soporte.wa:hover { background-color: #27ae60; color: white; transform: translateY(-2px); }
         .btn-soporte.mail { background-color: #fdf2e9; color: #e67e22; border: 2px solid #f39c12; }
         .btn-soporte.mail:hover { background-color: #e67e22; color: white; transform: translateY(-2px); }
-
         .credito { text-align: center; margin-top: 20px; margin-bottom: 20px; color: white; font-size: 13px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3); line-height: 1.8; opacity: 0.9;}
         optgroup { font-weight: 800; color: #8e44ad; }
 
         /* --- ESTILOS DE LA PANTILLA DE BLOQUEO --- */
         body.bloqueado { overflow: hidden; }
-        #pantalla-bloqueo {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(10px);
-            z-index: 99999;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .login-caja {
-            background: white; padding: 40px 30px; border-radius: 20px; 
-            text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.5); 
-            max-width: 350px; width: 90%; border-top: 8px solid #27c4b4;
-        }
+        #pantalla-bloqueo { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px); z-index: 99999; display: flex; justify-content: center; align-items: center; }
+        .login-caja { background: white; padding: 40px 30px; border-radius: 20px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.5); max-width: 350px; width: 90%; border-top: 8px solid #27c4b4; }
         .login-caja h2 { color: #2c3e50; margin-top: 0; font-size: 24px; font-weight: 800;}
         .login-caja p { color: #7f8c8d; font-size: 14px; margin-bottom: 25px;}
-        .login-caja input { 
-            margin-bottom: 20px; text-align: center; font-size: 20px; 
-            letter-spacing: 5px; padding: 15px;
-        }
-        .login-caja button { 
-            background: linear-gradient(135deg, #27c4b4, #1abc9c); 
-            color: white; border: none; padding: 15px; border-radius: 12px; 
-            cursor: pointer; font-weight: 800; width: 100%; font-size: 16px;
-            box-shadow: 0 6px 15px rgba(26, 188, 156, 0.4); transition: 0.3s;
-        }
+        .login-caja input { margin-bottom: 20px; text-align: center; font-size: 20px; letter-spacing: 5px; padding: 15px; }
+        .login-caja button { background: linear-gradient(135deg, #27c4b4, #1abc9c); color: white; border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 800; width: 100%; font-size: 16px; box-shadow: 0 6px 15px rgba(26, 188, 156, 0.4); transition: 0.3s; }
         .login-caja button:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(26, 188, 156, 0.5);}
 
         /* --- ESTILO DESPLEGABLE PERSONALIZADO --- */
         .custom-select-wrapper { position: relative; width: 100%; margin-bottom: 15px;}
-        .custom-select-trigger { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; 
-            background-color: #f8fafd; font-size: 14px; font-weight: 600; color: #2c3e50; 
-            cursor: pointer; transition: all 0.3s;
-        }
+        .custom-select-trigger { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; background-color: #f8fafd; font-size: 14px; font-weight: 600; color: #2c3e50; cursor: pointer; transition: all 0.3s; }
         .custom-select-trigger:after { content: '\25BC'; font-size: 10px; color: #7f8c8d; transition: transform 0.3s;}
         .custom-select-wrapper.open .custom-select-trigger { border-color: #27c4b4; background-color: #ffffff; box-shadow: 0 0 10px rgba(39, 196, 180, 0.2);}
         .custom-select-wrapper.open .custom-select-trigger:after { transform: rotate(180deg); color: #27c4b4;}
-
-        .custom-options { 
-            position: absolute; top: calc(100% + 5px); left: 0; width: 100%; 
-            background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1); opacity: 0; visibility: hidden; pointer-events: none; 
-            transform: translateY(-15px); transition: all 0.3s; z-index: 1000; overflow-y: auto; max-height: 250px;
-        }
+        .custom-options { position: absolute; top: calc(100% + 5px); left: 0; width: 100%; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(-15px); transition: all 0.3s; z-index: 1000; overflow-y: auto; max-height: 250px; }
         .custom-select-wrapper.open .custom-options { opacity: 1; visibility: visible; pointer-events: all; transform: translateY(0);}
-        .custom-option { 
-            padding: 12px 16px; font-size: 14px; color: #444; cursor: pointer; 
-            transition: all 0.2s; border-bottom: 1px solid #f1f2f6;
-        }
+        .custom-option { padding: 12px 16px; font-size: 14px; color: #444; cursor: pointer; transition: all 0.2s; border-bottom: 1px solid #f1f2f6; }
         .custom-option:last-child { border-bottom: none;}
-        
         .custom-option:hover { background-color: #f0fdfa; color: #0d9488;}
         .custom-option.selected { font-weight: bold; background-color: #e6fffa; color: #0f766e; border-left: 3px solid #27c4b4;}
-        .custom-option:hover .emoji { opacity: 1;}
-        
         .placeholder { color: #9aa1a7;}
         .custom-option[data-value="OTRO"] { display: flex; align-items: center; gap: 8px;}
         .emoji { font-size: 16px;}
-        
         .custom-options::-webkit-scrollbar { width: 6px; }
         .custom-options::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px;}
         .custom-options::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 10px;}
@@ -219,17 +114,11 @@
 
         /* --- ESTILOS PARA LA PLANTILLA DE IMAGEN OCULTA --- */
         #receta-render-area { position: absolute; left: -9999px; top: -9999px; z-index: -1; }
-        #receta-canvas {
-            width: 800px; background-color: #ffffff; padding: 40px; box-sizing: border-box;
-            font-family: 'Nunito', sans-serif; color: #2c3e50; border-top: 10px solid #27c4b4;
-        }
+        #receta-canvas { width: 800px; background-color: #ffffff; padding: 40px; box-sizing: border-box; font-family: 'Nunito', sans-serif; color: #2c3e50; border-top: 10px solid #27c4b4; }
         .canvas-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #27c4b4; padding-bottom: 15px; margin-bottom: 20px;}
         .canvas-header img { max-height: 80px; max-width: 200px; }
         .canvas-title { text-align: right; color: #27c4b4; font-size: 24px; font-weight: 800; margin: 0; }
-        .canvas-patient-info {
-            background-color: #f8fafd; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px;
-            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 25px;
-        }
+        .canvas-patient-info { background-color: #f8fafd; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .canvas-info-item { display: flex; flex-direction: column; }
         .canvas-info-label { font-size: 10px; color: #7f8c8d; text-transform: uppercase; font-weight: 800; margin-bottom: 4px; }
         .canvas-info-value { font-size: 14px; font-weight: 700; color: #2c3e50; }
@@ -317,7 +206,7 @@
             </div>
             <div>
                 <label>Peso (Kg):</label>
-                <input type="number" step="0.1" id="peso" placeholder="Ej. 12.5">
+                <input type="number" step="0.1" id="peso" placeholder="Ej. 12.5" oninput="calcularDosisInteligente()">
             </div>
             <div class="fila-doble">
                 <label>Médico Veterinario:</label>
@@ -355,52 +244,13 @@
                 <select id="selectDiagnostico" onchange="verificarOtro('Diagnostico')">
                     <option value="">-- Base de datos de diagnósticos --</option>
                     <optgroup label="🐕 PERROS (Caninos)">
-                        <option value="Erliquiosis canina">Erliquiosis canina</option>
-                        <option value="Parvovirosis canina">Parvovirosis canina</option>
-                        <option value="Distemper canino (Moquillo)">Distemper canino (Moquillo)</option>
-                        <option value="Leptospirosis">Leptospirosis</option>
-                        <option value="Babesiosis">Babesiosis</option>
-                        <option value="Gastroenteritis infecciosa">Gastroenteritis infecciosa</option>
-                        <option value="Dermatitis alérgica / Atópica">Dermatitis alérgica / Atópica</option>
-                        <option value="Sarna Demodéctica">Sarna Demodéctica</option>
-                        <option value="Sarna Sarcóptica">Sarna Sarcóptica</option>
-                        <option value="Piodermia">Piodermia</option>
-                        <option value="Otitis externa">Otitis externa</option>
-                        <option value="Traqueobronquitis (Tos de perreras)">Traqueobronquitis</option>
-                        <option value="Artrosis / Osteoartritis">Artrosis / Osteoartritis</option>
-                        <option value="Displasia de cadera">Displasia de cadera</option>
-                        <option value="Piometra">Piometra</option>
-                        <option value="Tumor Venéreo Transmisible (TVT)">Tumor Venéreo (TVT)</option>
-                        <option value="Insuficiencia Cardíaca Congestiva">Insuficiencia Cardíaca</option>
-                        <option value="Hipotiroidismo">Hipotiroidismo</option>
-                        <option value="Epilepsia idiopática">Epilepsia idiopática</option>
+                        <option value="Erliquiosis canina">Erliquiosis canina</option><option value="Parvovirosis canina">Parvovirosis canina</option><option value="Distemper canino (Moquillo)">Distemper canino (Moquillo)</option><option value="Leptospirosis">Leptospirosis</option><option value="Babesiosis">Babesiosis</option><option value="Gastroenteritis infecciosa">Gastroenteritis infecciosa</option><option value="Dermatitis alérgica / Atópica">Dermatitis alérgica / Atópica</option><option value="Sarna Demodéctica">Sarna Demodéctica</option><option value="Sarna Sarcóptica">Sarna Sarcóptica</option><option value="Piodermia">Piodermia</option><option value="Otitis externa">Otitis externa</option><option value="Traqueobronquitis (Tos de perreras)">Traqueobronquitis</option><option value="Artrosis / Osteoartritis">Artrosis / Osteoartritis</option><option value="Displasia de cadera">Displasia de cadera</option><option value="Piometra">Piometra</option><option value="Tumor Venéreo Transmisible (TVT)">Tumor Venéreo (TVT)</option><option value="Insuficiencia Cardíaca Congestiva">Insuficiencia Cardíaca</option><option value="Hipotiroidismo">Hipotiroidismo</option><option value="Epilepsia idiopática">Epilepsia idiopática</option>
                     </optgroup>
                     <optgroup label="🐈 GATOS (Felinos)">
-                        <option value="Rinotraqueítis viral felina">Rinotraqueítis viral felina</option>
-                        <option value="Leucemia viral felina (ViLeF)">Leucemia viral felina (ViLeF)</option>
-                        <option value="Inmunodeficiencia felina (VIF)">Inmunodeficiencia felina (VIF)</option>
-                        <option value="Peritonitis Infecciosa Felina (PIF)">Peritonitis Infecciosa (PIF)</option>
-                        <option value="Panleucopenia felina">Panleucopenia felina</option>
-                        <option value="Calicivirosis felina">Calicivirosis felina</option>
-                        <option value="Cistitis idiopática felina (FLUTD)">Cistitis idiopática felina (FLUTD)</option>
-                        <option value="Insuficiencia Renal Crónica">Insuficiencia Renal Crónica</option>
-                        <option value="Asma felino">Asma felino</option>
-                        <option value="Hipertiroidismo">Hipertiroidismo</option>
-                        <option value="Diabetes Mellitus">Diabetes Mellitus</option>
-                        <option value="Gingivoestomatitis Crónica">Gingivoestomatitis Crónica</option>
-                        <option value="Dermatofitosis (Hongos)">Dermatofitosis (Hongos)</option>
-                        <option value="Otitis por ácaros (Otodectes)">Otitis por ácaros (Otodectes)</option>
+                        <option value="Rinotraqueítis viral felina">Rinotraqueítis viral felina</option><option value="Leucemia viral felina (ViLeF)">Leucemia viral felina (ViLeF)</option><option value="Inmunodeficiencia felina (VIF)">Inmunodeficiencia felina (VIF)</option><option value="Peritonitis Infecciosa Felina (PIF)">Peritonitis Infecciosa (PIF)</option><option value="Panleucopenia felina">Panleucopenia felina</option><option value="Calicivirosis felina">Calicivirosis felina</option><option value="Cistitis idiopática felina (FLUTD)">Cistitis idiopática felina (FLUTD)</option><option value="Insuficiencia Renal Crónica">Insuficiencia Renal Crónica</option><option value="Asma felino">Asma felino</option><option value="Hipertiroidismo">Hipertiroidismo</option><option value="Diabetes Mellitus">Diabetes Mellitus</option><option value="Gingivoestomatitis Crónica">Gingivoestomatitis Crónica</option><option value="Dermatofitosis (Hongos)">Dermatofitosis (Hongos)</option><option value="Otitis por ácaros (Otodectes)">Otitis por ácaros (Otodectes)</option>
                     </optgroup>
                     <optgroup label="🩺 GENERALES">
-                        <option value="Parasitosis intestinal">Parasitosis intestinal</option>
-                        <option value="Infección del tracto urinario">Infección del tracto urinario</option>
-                        <option value="Deshidratación">Deshidratación</option>
-                        <option value="Anemia">Anemia</option>
-                        <option value="Herida infectada / Absceso">Herida infectada / Absceso</option>
-                        <option value="Traumatismo">Traumatismo</option>
-                        <option value="Reacción alérgica">Reacción alérgica</option>
-                        <option value="Conjuntivitis">Conjuntivitis</option>
-                        <option value="Control Sano / Profilaxis">Control Sano / Vacunación</option>
+                        <option value="Parasitosis intestinal">Parasitosis intestinal</option><option value="Infección del tracto urinario">Infección del tracto urinario</option><option value="Deshidratación">Deshidratación</option><option value="Anemia">Anemia</option><option value="Herida infectada / Absceso">Herida infectada / Absceso</option><option value="Traumatismo">Traumatismo</option><option value="Reacción alérgica">Reacción alérgica</option><option value="Conjuntivitis">Conjuntivitis</option><option value="Control Sano / Profilaxis">Control Sano / Vacunación</option>
                     </optgroup>
                     <option value="OTRO">👉 Otro (Escribir manualmente)</option>
                 </select>
@@ -416,42 +266,28 @@
                 <label>Forma Farmacéutica:</label>
                 <select id="tipoPresentacion" onchange="ajustarUnidades(); calcularTotalAuto();">
                     <optgroup label="Vía Oral (Sólidos)">
-                        <option value="Pastilla">Pastilla</option>
-                        <option value="Cápsula">Cápsula</option>
-                        <option value="Comprimido">Comprimido</option>
+                        <option value="Pastilla">Pastilla</option><option value="Cápsula">Cápsula</option><option value="Comprimido">Comprimido</option>
                     </optgroup>
                     <optgroup label="Vía Oral (Líquidos)">
-                        <option value="Jarabe">Jarabe</option>
-                        <option value="Suspensión">Suspensión</option>
-                        <option value="Gotas Orales">Gotas Orales</option>
+                        <option value="Jarabe">Jarabe</option><option value="Suspensión">Suspensión</option><option value="Gotas Orales">Gotas Orales</option>
                     </optgroup>
                     <optgroup label="Inyectables / Fluidos">
-                        <option value="Inyectable SC">Inyectable (SC)</option>
-                        <option value="Inyectable IM">Inyectable (IM)</option>
-                        <option value="Inyectable IV">Inyectable (IV)</option>
-                        <option value="Suero">Suero / Fluido</option>
+                        <option value="Inyectable SC">Inyectable (SC)</option><option value="Inyectable IM">Inyectable (IM)</option><option value="Inyectable IV">Inyectable (IV)</option><option value="Suero">Suero / Fluido</option>
                     </optgroup>
                     <optgroup label="Uso Tópico / Externo">
-                        <option value="Crema">Crema</option>
-                        <option value="Ungüento">Ungüento / Pomada</option>
-                        <option value="Spray">Spray / Aerosol</option>
-                        <option value="Champú">Champú medicado</option>
-                        <option value="Pipeta">Pipeta</option>
-                        <option value="Gotas Óticas">Gotas Óticas</option>
-                        <option value="Gotas Oftálmicas">Gotas Oftálmicas</option>
+                        <option value="Crema">Crema</option><option value="Ungüento">Ungüento / Pomada</option><option value="Spray">Spray / Aerosol</option><option value="Champú">Champú medicado</option><option value="Pipeta">Pipeta</option><option value="Gotas Óticas">Gotas Óticas</option><option value="Gotas Oftálmicas">Gotas Oftálmicas</option>
                     </optgroup>
                     <optgroup label="Otros">
-                        <option value="Polvo">Polvo</option>
-                        <option value="Supositorio">Supositorio</option>
-                        <option value="Gel">Gel</option>
-                        <option value="Otro">Otra forma</option>
+                        <option value="Polvo">Polvo</option><option value="Supositorio">Supositorio</option><option value="Gel">Gel</option><option value="Otro">Otra forma</option>
                     </optgroup>
                 </select>
             </div>
             <div class="fila-doble">
-                <label>Base de Datos de Medicamentos:</label>
-                <select id="selectMedicina" onchange="verificarOtro('Medicina')"></select>
-                <input type="text" id="inputOtroMedicina" class="input-otro" placeholder="Escribe el nombre del medicamento..." style="display: block;">
+                <label>Buscar Medicamento (Escribe libremente):</label>
+                <input type="text" id="inputMedicina" list="med-list" placeholder="Escribe para buscar o ingresar nuevo..." style="border-color: #9b59b6; background-color: #fcf3ff;" oninput="calcularDosisInteligente()">
+                <datalist id="med-list"></datalist>
+                
+                <div id="sugerencia-dosis" style="display:none; color: #8e44ad; font-size: 13px; margin-top: -5px; margin-bottom: 15px; font-weight: 800; background: #f4e8ff; padding: 8px 12px; border-radius: 8px; border-left: 4px solid #9b59b6;"></div>
             </div>
         </div>
 
@@ -527,108 +363,49 @@
                 <select id="selectExamen" onchange="verificarOtro('Examen')">
                     <option value="">-- Selecciona Análisis --</option>
                     <optgroup label="🧪 BIOQUÍMICA SANGUÍNEA">
-                        <option value="Lipasa específica canina / felina">Lipasa específica canina / felina</option>
-                        <option value="Albúmina">Albúmina</option>
-                        <option value="ALT / TGP">ALT / TGP</option>
-                        <option value="AST / TGO">AST / TGO</option>
-                        <option value="Amilasa">Amilasa</option>
-                        <option value="Bilirrubinas totales y fraccionadas">Bilirrubinas totales y fraccionadas</option>
-                        <option value="Colesterol total">Colesterol total</option>
-                        <option value="Creatinina sérica">Creatinina sérica</option>
-                        <option value="Fosfatasa alcalina">Fosfatasa alcalina</option>
-                        <option value="Glucosa sérica">Glucosa sérica</option>
-                        <option value="Proteínas totales y fraccionadas">Proteínas totales y fraccionadas</option>
-                        <option value="Triglicéridos">Triglicéridos</option>
-                        <option value="Urea">Urea</option>
+                        <option value="Lipasa específica canina / felina">Lipasa específica canina / felina</option><option value="Albúmina">Albúmina</option><option value="ALT / TGP">ALT / TGP</option><option value="AST / TGO">AST / TGO</option><option value="Amilasa">Amilasa</option><option value="Bilirrubinas totales y fraccionadas">Bilirrubinas totales y fraccionadas</option><option value="Colesterol total">Colesterol total</option><option value="Creatinina sérica">Creatinina sérica</option><option value="Fosfatasa alcalina">Fosfatasa alcalina</option><option value="Glucosa sérica">Glucosa sérica</option><option value="Proteínas totales y fraccionadas">Proteínas totales y fraccionadas</option><option value="Triglicéridos">Triglicéridos</option><option value="Urea">Urea</option>
                     </optgroup>
                     <optgroup label="🩸 HEMATOLOGÍA">
-                        <option value="Hemograma completo">Hemograma completo</option>
-                        <option value="Evaluación de lámina periférica">Evaluación de lámina periférica</option>
-                        <option value="Recuento de reticulocitos">Recuento de reticulocitos</option>
-                        <option value="Recuento plaquetas">Recuento plaquetas</option>
+                        <option value="Hemograma completo">Hemograma completo</option><option value="Evaluación de lámina periférica">Evaluación de lámina periférica</option><option value="Recuento de reticulocitos">Recuento de reticulocitos</option><option value="Recuento plaquetas">Recuento plaquetas</option>
                     </optgroup>
                     <optgroup label="📷 RAYOS X">
-                        <option value="Radiografía de Tórax">Radiografía de Tórax</option>
-                        <option value="Radiografía de Abdomen">Radiografía de Abdomen</option>
-                        <option value="Radiografía de Columna / Pelvis">Radiografía de Columna / Pelvis</option>
-                        <option value="Radiografía de Miembro Anterior / Posterior">Radiografía de Miembro Anterior/Posterior</option>
-                        <option value="Radiografía Traumatológica">Radiografía Traumatológica</option>
-                        <option value="Estudio Radiográfico de Contraste">Estudio Radiográfico de Contraste</option>
+                        <option value="Radiografía de Tórax">Radiografía de Tórax</option><option value="Radiografía de Abdomen">Radiografía de Abdomen</option><option value="Radiografía de Columna / Pelvis">Radiografía de Columna / Pelvis</option><option value="Radiografía de Miembro Anterior / Posterior">Radiografía de Miembro Anterior/Posterior</option><option value="Radiografía Traumatológica">Radiografía Traumatológica</option><option value="Estudio Radiográfico de Contraste">Estudio Radiográfico de Contraste</option>
                     </optgroup>
                     <optgroup label="🎥 ECOGRAFÍA">
-                        <option value="Ecografía Abdominal">Ecografía Abdominal</option>
-                        <option value="Ecografía de Gestación / Reproductiva">Ecografía de Gestación / Reproductiva</option>
-                        <option value="Ecografía FAST (A-FAST / T-FAST)">Ecografía FAST</option>
-                        <option value="Ecocardiograma">Ecocardiograma</option>
-                        <option value="Ecografía de Cuello / Tiroides">Ecografía de Cuello / Tiroides</option>
-                        <option value="Tomografía Axial Computarizada (TAC)">TAC</option>
+                        <option value="Ecografía Abdominal">Ecografía Abdominal</option><option value="Ecografía de Gestación / Reproductiva">Ecografía de Gestación / Reproductiva</option><option value="Ecografía FAST (A-FAST / T-FAST)">Ecografía FAST</option><option value="Ecocardiograma">Ecocardiograma</option><option value="Ecografía de Cuello / Tiroides">Ecografía de Cuello / Tiroides</option><option value="Tomografía Axial Computarizada (TAC)">TAC</option>
                     </optgroup>
                     <optgroup label="💧 ORINA">
-                        <option value="Uroanálisis">Uroanálisis</option>
-                        <option value="Urocultivo más antibiograma">Urocultivo más antibiograma</option>
-                        <option value="Ratio UPC">Ratio UPC</option>
+                        <option value="Uroanálisis">Uroanálisis</option><option value="Urocultivo más antibiograma">Urocultivo más antibiograma</option><option value="Ratio UPC">Ratio UPC</option>
                     </optgroup>
                     <optgroup label="🧬 REPRODUCCIÓN">
-                        <option value="Espermatograma">Espermatograma</option>
-                        <option value="Progesterona canina">Progesterona canina</option>
+                        <option value="Espermatograma">Espermatograma</option><option value="Progesterona canina">Progesterona canina</option>
                     </optgroup>
                     <optgroup label="🔬 PATOLOGÍA / CITOLOGÍA">
-                        <option value="Citología de líquidos orgánicos">Citología de líquidos orgánicos</option>
-                        <option value="Citología de masas cutáneas y subcutáneas">Citología de masas cutáneas</option>
-                        <option value="Diagnóstico histopatológico">Diagnóstico histopatológico</option>
-                        <option value="Otras citologías">Otras citologías</option>
+                        <option value="Citología de líquidos orgánicos">Citología de líquidos orgánicos</option><option value="Citología de masas cutáneas y subcutáneas">Citología de masas cutáneas</option><option value="Diagnóstico histopatológico">Diagnóstico histopatológico</option><option value="Otras citologías">Otras citologías</option>
                     </optgroup>
                     <optgroup label="🩺 ENDOCRINOLOGÍA">
-                        <option value="Cortisol canino">Cortisol canino</option>
-                        <option value="TSH">TSH</option>
-                        <option value="T4 Tiroxina">T4 Tiroxina</option>
-                        <option value="Perfil tiroideo">Perfil tiroideo</option>
+                        <option value="Cortisol canino">Cortisol canino</option><option value="TSH">TSH</option><option value="T4 Tiroxina">T4 Tiroxina</option><option value="Perfil tiroideo">Perfil tiroideo</option>
                     </optgroup>
                     <optgroup label="⚕️ PRUEBAS ESPECIALES">
-                        <option value="Proteína C reactiva (PCR)">Proteína C reactiva (PCR)</option>
-                        <option value="Prueba de Rivalta FIP">Prueba de Rivalta FIP</option>
-                        <option value="Suero Amiloide (SAA)">Suero Amiloide (SAA)</option>
-                        <option value="SDMA">SDMA</option>
+                        <option value="Proteína C reactiva (PCR)">Proteína C reactiva (PCR)</option><option value="Prueba de Rivalta FIP">Prueba de Rivalta FIP</option><option value="Suero Amiloide (SAA)">Suero Amiloide (SAA)</option><option value="SDMA">SDMA</option>
                     </optgroup>
                     <optgroup label="🩸 BANCO DE SANGRE">
-                        <option value="Unidad de sangre entera fresca para caninos (400 ml)">Sangre entera caninos (400 ml)</option>
-                        <option value="Media unidad de sangre entera fresca para caninos (200 ml)">Sangre entera caninos (200 ml)</option>
-                        <option value="Prueba cruzada (compatibilidad) para caninos">Prueba cruzada caninos</option>
-                        <option value="Unidad de sangre entera refrigerada para felinos (60 ml)">Sangre felinos (60 ml)</option>
+                        <option value="Unidad de sangre entera fresca para caninos (400 ml)">Sangre entera caninos (400 ml)</option><option value="Media unidad de sangre entera fresca para caninos (200 ml)">Sangre entera caninos (200 ml)</option><option value="Prueba cruzada (compatibilidad) para caninos">Prueba cruzada caninos</option><option value="Unidad de sangre entera refrigerada para felinos (60 ml)">Sangre felinos (60 ml)</option>
                     </optgroup>
                     <optgroup label="💩 COPROPARASITOLOGÍA">
-                        <option value="Análisis parasitológico">Análisis parasitológico</option>
-                        <option value="Análisis parasitológico seriado (3 días)">Análisis parasitológico seriado (3 días)</option>
+                        <option value="Análisis parasitológico">Análisis parasitológico</option><option value="Análisis parasitológico seriado (3 días)">Análisis parasitológico seriado (3 días)</option>
                     </optgroup>
                     <optgroup label="🔎 DERMATOLOGÍA">
-                        <option value="Citología de piel">Citología de piel</option>
-                        <option value="Raspado">Raspado</option>
-                        <option value="Tricograma">Tricograma</option>
-                        <option value="Combo dermatológico">Combo dermatológico</option>
+                        <option value="Citología de piel">Citología de piel</option><option value="Raspado">Raspado</option><option value="Tricograma">Tricograma</option><option value="Combo dermatológico">Combo dermatológico</option>
                     </optgroup>
                     <optgroup label="🧪 SEROLOGÍA">
-                        <option value="Test SNAP canino IDEXX">Test SNAP canino IDEXX</option>
-                        <option value="Test combo felino IDEXX">Test combo felino IDEXX</option>
-                        <option value="Prueba rápida Distemper canino">Prueba rápida Distemper canino</option>
-                        <option value="Prueba rápida de Sida felino y de Leucemia felina">Prueba rápida Sida/Leucemia felina</option>
-                        <option value="Prueba rápida Dirofilaria, Ehrlichia canis, Borrelia, Anaplasma">Prueba rápida Dirofilaria/Ehrlichia</option>
-                        <option value="Prueba rápida Parvovirus y Coronavirus canino">Prueba rápida Parvo/Coronavirus</option>
-                        <option value="Otros test">Otros test</option>
+                        <option value="Test SNAP canino IDEXX">Test SNAP canino IDEXX</option><option value="Test combo felino IDEXX">Test combo felino IDEXX</option><option value="Prueba rápida Distemper canino">Prueba rápida Distemper canino</option><option value="Prueba rápida de Sida felino y de Leucemia felina">Prueba rápida Sida/Leucemia felina</option><option value="Prueba rápida Dirofilaria, Ehrlichia canis, Borrelia, Anaplasma">Prueba rápida Dirofilaria/Ehrlichia</option><option value="Prueba rápida Parvovirus y Coronavirus canino">Prueba rápida Parvo/Coronavirus</option><option value="Otros test">Otros test</option>
                     </optgroup>
                     <optgroup label="🧬 OTRAS PRUEBAS">
-                        <option value="Descarte de Leptospira patógena por PCR">Descarte Leptospira PCR</option>
-                        <option value="Descarte de Mycoplasma por PCR">Descarte Mycoplasma PCR</option>
-                        <option value="Hemoglobina glicosilada canina y felina">Hemoglobina glicosilada</option>
-                        <option value="Dímero D">Dímero D</option>
-                        <option value="Fructosamina">Fructosamina</option>
+                        <option value="Descarte de Leptospira patógena por PCR">Descarte Leptospira PCR</option><option value="Descarte de Mycoplasma por PCR">Descarte Mycoplasma PCR</option><option value="Hemoglobina glicosilada canina y felina">Hemoglobina glicosilada</option><option value="Dímero D">Dímero D</option><option value="Fructosamina">Fructosamina</option>
                     </optgroup>
                     <optgroup label="📋 PERFILES / COMBOS">
-                        <option value="COMBO 1 (SALUD BÁSICO): Urea, Crea, TGO, TGP, FA, Glu, Hemo">COMBO 1 (SALUD BÁSICO)</option>
-                        <option value="COMBO 2 (PERFIL HEPÁTICO COMPLETO): TGO, TGP, FA, PT, Bili, Hemo">COMBO 2 (PERFIL HEPÁTICO COMPLETO)</option>
-                        <option value="COMBO 3 (PREOPERATORIO): TGO, TGP, Crea, Urea, Hemo, Uroanálisis">COMBO 3 (PREOPERATORIO)</option>
-                        <option value="COMBO 4 (PERFIL HEPÁTICO): TGO, TGP, FA">COMBO 4 (PERFIL HEPÁTICO)</option>
-                        <option value="COMBO 5 (PERFIL RENAL BÁSICO): Urea, Crea, Orina">COMBO 5 (PERFIL RENAL BÁSICO)</option>
-                        <option value="PERFIL BÁSICO: TGO, TGP, Crea, Urea, Hemo">PERFIL BÁSICO</option>
+                        <option value="COMBO 1 (SALUD BÁSICO): Urea, Crea, TGO, TGP, FA, Glu, Hemo">COMBO 1 (SALUD BÁSICO)</option><option value="COMBO 2 (PERFIL HEPÁTICO COMPLETO): TGO, TGP, FA, PT, Bili, Hemo">COMBO 2 (PERFIL HEPÁTICO COMPLETO)</option><option value="COMBO 3 (PREOPERATORIO): TGO, TGP, Crea, Urea, Hemo, Uroanálisis">COMBO 3 (PREOPERATORIO)</option><option value="COMBO 4 (PERFIL HEPÁTICO): TGO, TGP, FA">COMBO 4 (PERFIL HEPÁTICO)</option><option value="COMBO 5 (PERFIL RENAL BÁSICO): Urea, Crea, Orina">COMBO 5 (PERFIL RENAL BÁSICO)</option><option value="PERFIL BÁSICO: TGO, TGP, Crea, Urea, Hemo">PERFIL BÁSICO</option>
                     </optgroup>
                     <option value="OTRO">👉 Otras pruebas (Escribir manualmente)</option>
                 </select>
@@ -669,12 +446,8 @@
     <div class="soporte-container">
         <h4>💡 ¿Necesitas un cambio o tienes alguna sugerencia para VetPlace?</h4>
         <div class="fila-soporte">
-            <a href="https://wa.me/51945182445?text=Hola%20amor,%20tengo%20una%20sugerencia%20para%20el%20software%20VetPlace:" target="_blank" class="btn-soporte wa">
-                💬 Soporte por WhatsApp
-            </a>
-            <a href="mailto:luisjaramillo1098@gmail.com?subject=Sugerencia%20para%20VetPlace" class="btn-soporte mail">
-                ✉️ Enviar Correo
-            </a>
+            <a href="https://wa.me/51945182445?text=Hola%20amor,%20tengo%20una%20sugerencia%20para%20el%20software%20VetPlace:" target="_blank" class="btn-soporte wa">💬 Soporte por WhatsApp</a>
+            <a href="mailto:luisjaramillo1098@gmail.com?subject=Sugerencia%20para%20VetPlace" class="btn-soporte mail">✉️ Enviar Correo</a>
         </div>
     </div>
 
@@ -689,32 +462,24 @@
                 <img id="canvasLogo" src="" style="display: none;">
                 <div id="canvasTitle" class="canvas-title">RECETA MÉDICA</div>
             </div>
-
             <div class="canvas-patient-info">
                 <div class="canvas-info-item"><span class="canvas-info-label">Paciente</span><span class="canvas-info-value" id="cv-paciente">-</span></div>
                 <div class="canvas-info-item"><span class="canvas-info-label">Fecha</span><span class="canvas-info-value" id="cv-fecha">-</span></div>
                 <div class="canvas-info-item"><span class="canvas-info-label">Médico</span><span class="canvas-info-value" id="cv-medico">-</span></div>
-                
                 <div class="canvas-info-item"><span class="canvas-info-label">Especie / Raza</span><span class="canvas-info-value" id="cv-especie">-</span></div>
                 <div class="canvas-info-item"><span class="canvas-info-label">Sexo</span><span class="canvas-info-value" id="cv-sexo">-</span></div>
                 <div class="canvas-info-item"><span class="canvas-info-label">Edad / Peso</span><span class="canvas-info-value" id="cv-edad">-</span></div>
-                
                 <div class="canvas-info-item" style="grid-column: span 2;"><span class="canvas-info-label" id="cv-lbl-diag">Diagnóstico</span><span class="canvas-info-value" id="cv-diag">-</span></div>
                 <div class="canvas-info-item"><span class="canvas-info-label" style="color: #e74c3c;">Próxima Cita</span><span class="canvas-info-value" style="color: #c0392b;" id="cv-proxima">-</span></div>
             </div>
-
             <div id="canvas-rx-section">
                 <div class="canvas-section-title">RP (Tratamiento Prescrito)</div>
-                <div class="canvas-list" id="cv-lista-med">
-                    </div>
+                <div class="canvas-list" id="cv-lista-med"></div>
             </div>
-
             <div id="canvas-ex-section" style="display: none;">
                 <div class="canvas-section-title">Órdenes / Exámenes</div>
-                <div class="canvas-list" id="cv-lista-ex">
-                    </div>
+                <div class="canvas-list" id="cv-lista-ex"></div>
             </div>
-
             <div class="canvas-footer">
                 <div class="canvas-vet-name" id="cv-footer-vet"></div>
                 <div class="canvas-vet-title">Médico Veterinario</div>
@@ -728,15 +493,13 @@
 
     <script>
         // --- LÓGICA DE BLOQUEO DE PANTALLA ---
-        document.body.classList.add('bloqueado'); // Bloquea el scroll al inicio
+        document.body.classList.add('bloqueado'); 
 
         function verificarClave() {
-            // La clave "" está codificada en Base64
+            // Clave: balu
             const claveCodificada = "YmFsdTIwMjY="; 
-            
             const intento = document.getElementById('inputClave').value;
             
-            // btoa() codifica lo que escribe el usuario para compararlo
             if(btoa(intento) === claveCodificada) {
                 document.getElementById('pantalla-bloqueo').style.opacity = '0';
                 setTimeout(() => {
@@ -750,14 +513,11 @@
             }
         }
 
-        // Permite presionar la tecla "Enter" para ingresar sin usar el mouse
         document.getElementById('inputClave').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                verificarClave();
-            }
+            if (e.key === 'Enter') verificarClave();
         });
 
-        // --- LÓGICA ORIGINAL DE TU APP (Logo, DB, Interfaz) ---
+        // --- LÓGICA ORIGINAL DEL LOGO ---
         function guardarLogo(event) {
             const file = event.target.files[0];
             if (file) {
@@ -775,30 +535,133 @@
                 canvasImg.src = base64; canvasImg.style.display = 'block';
             }
             else { 
-                img.style.display = 'none'; 
-                canvasImg.style.display = 'none';
+                img.style.display = 'none'; canvasImg.style.display = 'none';
                 document.getElementById('canvasTitle').style.textAlign = 'left';
             }
         }
 
-        const medicamentosBD = [
-            "DOXITEL 100 MG","DOXITEL 200 MG","CEFAVET 300 MG","CEFAVET 600 MG",
-            "CLINDAVET 75 MG","CLINDAVET 150 MG","HIGACURE","ALERFLAM",
-            "PREDNOVET 20","PREDNISONA 5 MG","ENTEROGERMINA PROBIOTICOS",
-            "HISTAPET","GASTROPET","NEUMOFLOGIN","UROFLOGIN",
-            "SPECTRYL","STOMAGYL","PROPANTELINA","ANTIBIOTICO BUCAL",
-            "FLOXATEL 50","FLOXATEL 100","CLAMOVET 250","DERMASEP SOLUCION",
-            "ECADERM SOLUCION","NUTRAVET BIOTINA","OTOCOR GOTAS",
-            "PORTIL CREMA","CRAMA 6A","SUPER CHEVINAL JARABE","OTIFLEX C SPRAY",
-            "ECAOTIC SPRAY"
+        // ==========================================
+        // VADEMECUM Y CALCULADORA INTELIGENTE
+        // Formato extraído de las imágenes: [peso x dosis / concentracion]
+        // ==========================================
+        const vademecum = {
+            // Fórmulas inyectables y líquidas extraídas de tus imágenes (ml)
+            "OMEPRAZOL": { tipo: "liquido", mg_kg: 0.7, concentracion: 8, unidad: "ml" },
+            "ANTALVET (MONTANA)": { tipo: "liquido", mg_kg: 20, concentracion: 500, unidad: "ml" },
+            "AMOXICILINA LA 20%": { tipo: "liquido", mg_kg: 10, concentracion: 200, unidad: "ml" },
+            "FUROSEMIDA": { tipo: "liquido", mg_kg: 2, concentracion: 50, unidad: "ml" },
+            "TRANSAMIN 5%": { tipo: "liquido", mg_kg: 20, concentracion: 100, unidad: "ml" },
+            "HISTAPROV": { tipo: "liquido", mg_kg: 0.5, concentracion: 5, unidad: "ml" },
+            "ONDANSETRON": { tipo: "liquido", mg_kg: 0.15, concentracion: 2, unidad: "ml" },
+            "CEFTRIAXONA": { tipo: "liquido", mg_kg: 20, concentracion: 200, unidad: "ml" },
+            "ENROFLOXACINA 10%": { tipo: "liquido", mg_kg: 5, concentracion: 100, unidad: "ml" },
+            "CLINDAMICINA INYECTABLE": { tipo: "liquido", mg_kg: 5, concentracion: 150, unidad: "ml" },
+            "DEXAMETASONA": { tipo: "liquido", mg_kg: 0.2, concentracion: 2, unidad: "ml" },
+            "SULFA INYECTABLE": { tipo: "liquido", mg_kg: 25, concentracion: 200, unidad: "ml" },
+            "SULFA JARABE": { tipo: "liquido", mg_kg: 25, concentracion: 40, unidad: "ml" },
+            "OXITETRACICLINA 50": { tipo: "liquido", mg_kg: 5, concentracion: 50, unidad: "ml" },
+            "OXITETRACICLINA 100": { tipo: "liquido", mg_kg: 5, concentracion: 100, unidad: "ml" },
+            "AB BRONCOL": { tipo: "liquido", mg_kg: 20, concentracion: 240, unidad: "ml" },
+            "METOCLOPRAMIDA": { tipo: "liquido", mg_kg: 0.5, concentracion: 5, unidad: "ml" },
+            "METRONIDAZOL IV": { tipo: "liquido", mg_kg: 20, concentracion: 5, unidad: "ml" },
+            "METRONIDAZOL ORAL": { tipo: "liquido", mg_kg: 20, concentracion: 50, unidad: "ml" },
+            "CORTIFLEX METIL PREDNISOLONA": { tipo: "liquido", mg_kg: 0.22, concentracion: 10, unidad: "ml" },
+            "MELOXICAM": { tipo: "liquido", mg_kg: 0.2, concentracion: 5, unidad: "ml" },
+            "MELOVIVET": { tipo: "liquido", mg_kg: 0.1, concentracion: 20, unidad: "ml" },
+            "MANITOL 20%": { tipo: "liquido", mg_kg: 1, concentracion: 200, unidad: "ml" },
+            "DIMENHIDRINATO": { tipo: "liquido", mg_kg: 7, concentracion: 50, unidad: "ml" },
+            "XILACINA": { tipo: "liquido", mg_kg: 1, concentracion: 20, unidad: "ml" },
+            "TRAMADOL (VETERLINE/GENVET)": { tipo: "liquido", mg_kg: 2, concentracion: 50, unidad: "ml" },
+            "CERENIA": { tipo: "liquido", mg_kg: 1, concentracion: 10, unidad: "ml" },
+
+            // Sólidos
+            "DOXITEL 100 MG": { tipo: "solido", mg_kg: 10, concentracion: 100, unidad: "pastilla(s)" },
+            "DOXITEL 200 MG": { tipo: "solido", mg_kg: 10, concentracion: 200, unidad: "pastilla(s)" },
+            "CEFAVET 300 MG": { tipo: "solido", mg_kg: 20, concentracion: 300, unidad: "pastilla(s)" },
+            "CEFAVET 600 MG": { tipo: "solido", mg_kg: 20, concentracion: 600, unidad: "pastilla(s)" },
+            "CLINDAVET 75 MG": { tipo: "solido", mg_kg: 11, concentracion: 75, unidad: "pastilla(s)" },
+            "CLINDAVET 150 MG": { tipo: "solido", mg_kg: 11, concentracion: 150, unidad: "pastilla(s)" },
+            "PREDNOVET 20": { tipo: "solido", mg_kg: 1, concentracion: 20, unidad: "pastilla(s)" },
+            "PREDNISONA 5 MG": { tipo: "solido", mg_kg: 1, concentracion: 5, unidad: "pastilla(s)" },
+            "FLOXATEL 50": { tipo: "solido", mg_kg: 5, concentracion: 50, unidad: "pastilla(s)" }, 
+            "FLOXATEL 100": { tipo: "solido", mg_kg: 5, concentracion: 100, unidad: "pastilla(s)" },
+            "CLAMOVET 250": { tipo: "solido", mg_kg: 15, concentracion: 250, unidad: "pastilla(s)" },
+            "DOXILINE 100 MG (VETERLINE)": { tipo: "solido", mg_kg: 10, concentracion: 100, unidad: "pastilla(s)" },
+            "DOXILINE 200 MG (VETERLINE)": { tipo: "solido", mg_kg: 10, concentracion: 200, unidad: "pastilla(s)" },
+            "CEFALINE 500 MG (VETERLINE)": { tipo: "solido", mg_kg: 20, concentracion: 500, unidad: "pastilla(s)" },
+            "ENDAL PLUS": { tipo: "solido", mg_kg: 1, concentracion: 10, unidad: "pastilla(s)" } // Dosis: 1 past / 10 kg
+        };
+
+        const medicamentosSinCalculo = [
+            // LABORATORIOS SOLICITADOS
+            "AMOXICILINA 500MG (GENVET)",
+            "DEXAMETASONA (BIOMONT)",
+            "CEFALEXINA (LABET)",
+            "MELOXILINE (VETERLINE)",
+            "KETOLINE (VETERLINE)",
+            "TRAMALINE (VETERLINE)",
+            "GASTROLINE (VETERLINE)",
+            
+            // ANTIPULGAS / GARRAPATAS (Por rangos de peso)
+            "BRAVECTO 112.5 MG (2 a 4.5 KG)",
+            "BRAVECTO 250 MG (4.5 a 10 KG)",
+            "BRAVECTO 500 MG (10 a 20 KG)",
+            "BRAVECTO 1000 MG (20 a 40 KG)",
+            "PROTEGGO (2 a 4 KG)",
+            "PROTEGGO (4.1 a 10 KG)",
+            "PROTEGGO (10.1 a 25 KG)",
+            "PROTEGGO (25.1 a 50 KG)",
+
+            // OTROS DE BASE
+            "HIGACURE","ALERFLAM","ENTEROGERMINA PROBIOTICOS","HISTAPET","GASTROPET",
+            "NEUMOFLOGIN","UROFLOGIN","SPECTRYL","STOMAGYL","PROPANTELINA",
+            "ANTIBIOTICO BUCAL","DERMASEP SOLUCION","ECADERM SOLUCION",
+            "NUTRAVET BIOTINA","OTOCOR GOTAS","PORTIL CREMA","CRAMA 6A",
+            "SUPER CHEVINAL JARABE","OTIFLEX C SPRAY","ECAOTIC SPRAY"
         ];
         
         function cargarMedicamentos() {
-            const select = document.getElementById('selectMedicina');
-            select.innerHTML = '';
-            select.add(new Option("👉 Manual (Escribir medicamento)", "OTRO"));
-            medicamentosBD.forEach(med => select.add(new Option(med, med)));
-            verificarOtro('Medicina');
+            const datalist = document.getElementById('med-list');
+            datalist.innerHTML = '';
+            
+            Object.keys(vademecum).forEach(med => {
+                let option = document.createElement('option'); option.value = med; datalist.appendChild(option);
+            });
+            medicamentosSinCalculo.forEach(med => {
+                let option = document.createElement('option'); option.value = med; datalist.appendChild(option);
+            });
+        }
+
+        function calcularDosisInteligente() {
+            const medNombre = document.getElementById('inputMedicina').value.toUpperCase();
+            const peso = parseFloat(document.getElementById('peso').value);
+            const info = vademecum[medNombre];
+            const divSugerencia = document.getElementById('sugerencia-dosis');
+
+            if (info && !isNaN(peso) && peso > 0) {
+                // Cálculo basado en tus apuntes: [peso x dosis / concentracion]
+                let dosisExacta = (peso * info.mg_kg) / info.concentracion;
+                
+                if(info.tipo === 'solido') {
+                    dosisExacta = Math.round(dosisExacta * 4) / 4; 
+                    if(dosisExacta === 0) dosisExacta = 0.25; 
+                } else {
+                    dosisExacta = Math.round(dosisExacta * 10) / 10; 
+                }
+
+                document.getElementById('inputOtroDosis').value = dosisExacta;
+                document.getElementById('selectDosis').value = 'OTRO';
+                
+                divSugerencia.innerHTML = `💡 Fórmula aplicada: <b>[${peso}kg x ${info.mg_kg}mg / ${info.concentracion}]</b> = <b>${dosisExacta} ${info.unidad}</b> por toma.`;
+                divSugerencia.style.display = 'block';
+                
+                const triggerSpan = document.querySelector('#dosisCustomSelect .custom-select-trigger span');
+                if(triggerSpan) { triggerSpan.textContent = dosisExacta; triggerSpan.classList.remove('placeholder'); }
+                
+                calcularTotalAuto();
+            } else {
+                divSugerencia.style.display = 'none';
+            }
         }
 
         function cargarDias() {
@@ -889,6 +752,8 @@
                     document.getElementById('dosisCustomSelect').classList.remove('open');
                     customOptionsContainer.querySelectorAll('.custom-option').forEach(opt=>opt.classList.remove('selected'));
                     this.classList.add('selected');
+                    document.getElementById('inputOtroDosis').value = value === "OTRO" ? "" : value;
+                    calcularTotalAuto();
                 });
                 customOptionsContainer.appendChild(newOption);
             });
@@ -925,9 +790,11 @@
 
         function calcularTotalAuto() {
             let valDosis = document.getElementById('selectDosis').value;
-            if(valDosis==='OTRO') valDosis = document.getElementById('inputOtroDosis').value;
+            if(valDosis==='OTRO' || valDosis==='') valDosis = document.getElementById('inputOtroDosis').value;
+            
             let frec = document.getElementById('selectFrecuencia').value;
             if(frec==='OTRO') frec = document.getElementById('inputOtroFrecuencia').value;
+            
             let dias = document.getElementById('selectDuracion').value;
             if(dias==='OTRO') dias = document.getElementById('inputOtroDuracion').value;
 
@@ -936,6 +803,7 @@
             if(fStr.includes("8")) tomas=3;
             else if(fStr.includes("12")) tomas=2;
             else if(fStr.includes("6")) tomas=4;
+            else if(fStr.includes("24")) tomas=1;
             
             let output=document.getElementById('totalEntregar');
             if(!isNaN(v)&&!isNaN(d)&&v>0&&d>0) output.value=Math.ceil(v*tomas*d);
@@ -946,8 +814,11 @@
 
         function agregarMedicamento() {
             const tipoPres=document.getElementById('tipoPresentacion').value;
-            const med=document.getElementById('selectMedicina').value==='OTRO'?document.getElementById('inputOtroMedicina').value:document.getElementById('selectMedicina').value;
+            const med=document.getElementById('inputMedicina').value.trim();
+            
             let tDos=document.getElementById('selectDosis').value==='OTRO'?document.getElementById('inputOtroDosis').value:document.getElementById('selectDosis').options[document.getElementById('selectDosis').selectedIndex].text;
+            if(document.getElementById('selectDosis').value==='') tDos=document.getElementById('inputOtroDosis').value;
+
             let frec=document.getElementById('selectFrecuencia').value==='OTRO'?document.getElementById('inputOtroFrecuencia').value:document.getElementById('selectFrecuencia').value;
             const diasText=document.getElementById('selectDuracion').value==='OTRO'?document.getElementById('inputOtroDuracion').value:document.getElementById('selectDuracion').value;
             const selectInstruccion=document.getElementById('selectInstruccion').value;
@@ -966,7 +837,9 @@
             }
             
             const total=document.getElementById('totalEntregar').value;
-            if(!med||!tDos) return alert("Falta especificar el nombre y la dosis del medicamento.");
+            
+            if(!med) return alert("Falta especificar el nombre del medicamento.");
+            if(!tDos) return alert("Falta especificar la dosis del medicamento.");
 
             let diasFinal=(diasText==='permanente')?'Uso continuo':(diasText==='1'?'Dosis única':(diasText?`x ${diasText} días`:''));
             tratamiento.push({med,pres:tipoPres,tDos,frec,dias:diasFinal,inst:instFinal,totalStr:total,selInst:selectInstruccion==='APLICAR_DEJAR_ACTUAR'||(tipoPres.includes('Gotas'))?'OTRO':selectInstruccion});
@@ -977,7 +850,7 @@
             const ul=document.getElementById('listaVisualMedicamentos'); ul.innerHTML="";
             tratamiento.forEach((m,i) => {
                 ul.innerHTML+=`<li><div class="acciones-lista"><button class="btn-pequeno btn-edit" onclick="editarMed(${i})" title="Editar">✏️</button><button class="btn-pequeno btn-eliminar" onclick="tratamiento.splice(${i},1);renderTerapia();">❌</button></div>
-                <strong style="font-size:15px; color:#2c3e50;">${i+1}. ${m.med}</strong> <span style="color:#7f8c8d; font-size:12px;">(${m.pres})</span><br>
+                <strong style="font-size:15px; color:#2c3e50;">${i+1}. ${m.med.toUpperCase()}</strong> <span style="color:#7f8c8d; font-size:12px;">(${m.pres})</span><br>
                 <div style="margin-top:8px; line-height:1.6; color: #444;"><small>• ${m.tDos} ${m.frec} ${m.dias}. ${m.inst?'<em>'+m.inst+'</em>':''}<br><span style="color:#27c4b4; font-weight:800;">▶ Cantidad: ${m.totalStr}</span></small></div></li>`;
             });
         }
@@ -985,7 +858,7 @@
         function editarMed(i) {
             const m=tratamiento[i];
             document.getElementById('tipoPresentacion').value=m.pres; ajustarUnidades();
-            document.getElementById('selectMedicina').value="OTRO"; document.getElementById('inputOtroMedicina').value=m.med; document.getElementById('inputOtroMedicina').style.display="block";
+            document.getElementById('inputMedicina').value=m.med;
             document.getElementById('selectInstruccion').value=m.selInst;
             if(m.selInst==='OTRO'){document.getElementById('inputOtroInstruccion').value=m.inst;document.getElementById('inputOtroInstruccion').style.display="block";}
             else document.getElementById('inputOtroInstruccion').style.display="none";
@@ -997,8 +870,9 @@
             const triggerSpan=document.querySelector('#dosisCustomSelect .custom-select-trigger span');
             if(triggerSpan){triggerSpan.textContent="-- Dosis --";triggerSpan.classList.add('placeholder');}
             document.getElementById('selectDosis').value="";
-            document.getElementById('inputOtroDosis').style.display="none";
-            document.getElementById('selectMedicina').value="OTRO"; document.getElementById('inputOtroMedicina').style.display="block"; document.getElementById('inputOtroMedicina').value="";
+            document.getElementById('inputOtroDosis').value="";
+            document.getElementById('inputMedicina').value=""; 
+            document.getElementById('sugerencia-dosis').style.display="none";
             document.getElementById('selectFrecuencia').value=""; document.getElementById('inputOtroFrecuencia').style.display="none";
             document.getElementById('selectDuracion').value=""; document.getElementById('inputOtroDuracion').style.display="none";
             document.getElementById('selectInstruccion').value=""; document.getElementById('inputOtroInstruccion').style.display="none";
@@ -1047,7 +921,7 @@
             return `Receta_${m}_VetPlace.${extension}`;
         }
 
-        // --- GENERACIÓN DE PDF ORIGINAL ---
+        // --- GENERACIÓN DE PDF ---
         function crearDocumentoPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -1170,12 +1044,7 @@
         }
 
         function descargarPDF() {
-            try {
-                crearDocumentoPDF().save(obtenerNombreArchivo('pdf'));
-            } catch(e) {
-                alert("Error al generar PDF: " + e.message);
-                console.error(e);
-            }
+            try { crearDocumentoPDF().save(obtenerNombreArchivo('pdf')); } catch(e) { alert("Error al generar PDF: " + e.message); }
         }
         
         async function compartirPDF() {
@@ -1190,16 +1059,13 @@
                     alert("Tu dispositivo no soporta compartir directamente. Se descargará el PDF.");
                     doc.save(obtenerNombreArchivo('pdf'));
                 }
-            } catch(e) {
-                if(e.name!=='AbortError') { alert("Error: " + e.message); console.error(e); }
-            }
+            } catch(e) { if(e.name!=='AbortError') { alert("Error: " + e.message); } }
         }
 
         // ==========================================
-        // NUEVA FUNCIONALIDAD: GENERACIÓN DE IMAGEN
+        // GENERACIÓN DE IMAGEN
         // ==========================================
         function prepararPlantillaImagen() {
-            // Obtener valores del formulario
             const m = document.getElementById('nombreMascota').value.toUpperCase() || 'NO ESPECIFICADO';
             const esp = document.getElementById('especie').value.toUpperCase();
             const sexo = document.getElementById('sexo').value.toUpperCase();
@@ -1212,7 +1078,6 @@
             const fecha = document.getElementById('fecha').value ? document.getElementById('fecha').value.split('-').reverse().join('/') : '';
             const prox = document.getElementById('proxCita').value ? document.getElementById('proxCita').value.split('-').reverse().join('/') : '-';
 
-            // Inyectar en el Canvas HTML
             document.getElementById('cv-paciente').textContent = m;
             document.getElementById('cv-fecha').textContent = fecha;
             document.getElementById('cv-medico').textContent = vet || 'No especificado';
@@ -1224,7 +1089,6 @@
             document.getElementById('cv-proxima').textContent = prox;
             document.getElementById('cv-footer-vet').textContent = vet;
 
-            // Inyectar Tratamiento
             const listaMed = document.getElementById('cv-lista-med');
             listaMed.innerHTML = '';
             if (tratamiento.length === 0) {
@@ -1246,7 +1110,6 @@
                 });
             }
 
-            // Inyectar Exámenes
             const seccionEx = document.getElementById('canvas-ex-section');
             const listaEx = document.getElementById('cv-lista-ex');
             if (examenes.length > 0) {
@@ -1271,14 +1134,7 @@
         async function capturarRecetaImagen() {
             prepararPlantillaImagen();
             const element = document.getElementById('receta-canvas');
-            
-            // Usamos html2canvas
-            const canvas = await html2canvas(element, {
-                scale: 2, // Mejor resolución
-                useCORS: true, // Para cargar el logo correctamente si es externo
-                backgroundColor: '#ffffff'
-            });
-            
+            const canvas = await html2canvas(element, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
             return canvas;
         }
 
@@ -1286,45 +1142,28 @@
             try {
                 const canvas = await capturarRecetaImagen();
                 const image = canvas.toDataURL("image/png");
-                
                 const link = document.createElement('a');
-                link.href = image;
-                link.download = obtenerNombreArchivo('png');
-                
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            } catch(e) {
-                alert("Error al generar imagen: " + e.message);
-                console.error(e);
-            }
+                link.href = image; link.download = obtenerNombreArchivo('png');
+                document.body.appendChild(link); link.click(); document.body.removeChild(link);
+            } catch(e) { alert("Error al generar imagen: " + e.message); }
         }
 
         async function compartirImagen() {
             try {
                 const canvas = await capturarRecetaImagen();
-                
                 canvas.toBlob(async (blob) => {
                     const m = document.getElementById('nombreMascota').value.toUpperCase() || 'Mascota';
                     const file = new File([blob], obtenerNombreArchivo('png'), { type: 'image/png' });
                     
                     if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        await navigator.share({
-                            files: [file],
-                            title: `Receta Veterinaria - ${m}`,
-                            text: `Hola, adjuntamos la receta médica veterinaria de ${m} desde VetPlace.`
-                        });
+                        await navigator.share({ files: [file], title: `Receta Veterinaria - ${m}`, text: `Hola, adjuntamos la receta médica veterinaria de ${m} desde VetPlace.` });
                     } else {
                         alert("Tu dispositivo/navegador no soporta compartir imágenes directamente. Se descargará en su lugar.");
                         descargarImagen();
                     }
                 }, 'image/png');
-                
-            } catch(e) {
-                if(e.name !== 'AbortError') { alert("Error al compartir: " + e.message); console.error(e); }
-            }
+            } catch(e) { if(e.name !== 'AbortError') { alert("Error al compartir: " + e.message); } }
         }
 
     </script>
-
 </body></html>
