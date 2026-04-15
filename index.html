@@ -5,6 +5,9 @@
     <title>VetPlace - Generador de Recetas</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <style>
         /* Diseño Premium y Moderno Web */
         body { 
@@ -58,16 +61,22 @@
             .contenedor-botones { flex-direction: column; }
         }
 
-        .contenedor-botones { display: flex; gap: 15px; margin-top: 25px; }
-        .btn-generar, .btn-compartir {
-            color: white; border: none; cursor: pointer; font-size: 16px; font-weight: 800; 
-            padding: 16px; border-radius: 12px; flex: 1; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;
+        .contenedor-botones { display: flex; gap: 15px; margin-top: 25px; flex-wrap: wrap; }
+        .btn-generar, .btn-compartir, .btn-img-descargar, .btn-img-compartir {
+            color: white; border: none; cursor: pointer; font-size: 14px; font-weight: 800; 
+            padding: 16px; border-radius: 12px; flex: 1; min-width: 45%; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;
         }
         .btn-generar { background: linear-gradient(135deg, #27c4b4, #1abc9c); box-shadow: 0 6px 15px rgba(26, 188, 156, 0.4);}
         .btn-generar:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(26, 188, 156, 0.5);}
         .btn-compartir { background: linear-gradient(135deg, #2ecc71, #27ae60); box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);}
         .btn-compartir:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(46, 204, 113, 0.5);}
         
+        /* Estilos para los nuevos botones de imagen */
+        .btn-img-descargar { background: linear-gradient(135deg, #f39c12, #e67e22); box-shadow: 0 6px 15px rgba(230, 126, 34, 0.4);}
+        .btn-img-descargar:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(230, 126, 34, 0.5);}
+        .btn-img-compartir { background: linear-gradient(135deg, #3498db, #2980b9); box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);}
+        .btn-img-compartir:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(52, 152, 219, 0.5);}
+
         .btn-agregar { 
             background-color: #f1f2f6; color: #8e44ad; border: 2px dashed #c49aef; 
             font-weight: 700; cursor: pointer; font-size: 15px; border-radius: 10px; padding: 12px;
@@ -99,8 +108,76 @@
         .resaltado-container label { color: #0d9488; }
         .resaltado { border: 2px solid #14b8a6; background-color: #ffffff; color: #0f766e; font-weight: 700; font-size: 15px; margin-bottom: 0;}
 
-        .credito { text-align: center; margin-top: 40px; margin-bottom: 20px; color: white; font-size: 13px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3); line-height: 1.8; opacity: 0.9;}
+        /* --- ESTILOS SECCIÓN SOPORTE --- */
+        .soporte-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 40px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 2px dashed #a29bfe;
+            backdrop-filter: blur(5px);
+        }
+        .soporte-container h4 {
+            color: #6c5ce7;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 800;
+        }
+        .fila-soporte {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-soporte {
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 14px;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-soporte.wa { background-color: #e8f9f0; color: #27ae60; border: 2px solid #2ecc71; }
+        .btn-soporte.wa:hover { background-color: #27ae60; color: white; transform: translateY(-2px); }
+        .btn-soporte.mail { background-color: #fdf2e9; color: #e67e22; border: 2px solid #f39c12; }
+        .btn-soporte.mail:hover { background-color: #e67e22; color: white; transform: translateY(-2px); }
+
+        .credito { text-align: center; margin-top: 20px; margin-bottom: 20px; color: white; font-size: 13px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3); line-height: 1.8; opacity: 0.9;}
         optgroup { font-weight: 800; color: #8e44ad; }
+
+        /* --- ESTILOS DE LA PANTILLA DE BLOQUEO --- */
+        body.bloqueado { overflow: hidden; }
+        #pantalla-bloqueo {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 99999;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .login-caja {
+            background: white; padding: 40px 30px; border-radius: 20px; 
+            text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.5); 
+            max-width: 350px; width: 90%; border-top: 8px solid #27c4b4;
+        }
+        .login-caja h2 { color: #2c3e50; margin-top: 0; font-size: 24px; font-weight: 800;}
+        .login-caja p { color: #7f8c8d; font-size: 14px; margin-bottom: 25px;}
+        .login-caja input { 
+            margin-bottom: 20px; text-align: center; font-size: 20px; 
+            letter-spacing: 5px; padding: 15px;
+        }
+        .login-caja button { 
+            background: linear-gradient(135deg, #27c4b4, #1abc9c); 
+            color: white; border: none; padding: 15px; border-radius: 12px; 
+            cursor: pointer; font-weight: 800; width: 100%; font-size: 16px;
+            box-shadow: 0 6px 15px rgba(26, 188, 156, 0.4); transition: 0.3s;
+        }
+        .login-caja button:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(26, 188, 156, 0.5);}
 
         /* --- ESTILO DESPLEGABLE PERSONALIZADO --- */
         .custom-select-wrapper { position: relative; width: 100%; margin-bottom: 15px;}
@@ -139,9 +216,45 @@
         .custom-options::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px;}
         .custom-options::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 10px;}
         .custom-options::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+
+        /* --- ESTILOS PARA LA PLANTILLA DE IMAGEN OCULTA --- */
+        #receta-render-area { position: absolute; left: -9999px; top: -9999px; z-index: -1; }
+        #receta-canvas {
+            width: 800px; background-color: #ffffff; padding: 40px; box-sizing: border-box;
+            font-family: 'Nunito', sans-serif; color: #2c3e50; border-top: 10px solid #27c4b4;
+        }
+        .canvas-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #27c4b4; padding-bottom: 15px; margin-bottom: 20px;}
+        .canvas-header img { max-height: 80px; max-width: 200px; }
+        .canvas-title { text-align: right; color: #27c4b4; font-size: 24px; font-weight: 800; margin: 0; }
+        .canvas-patient-info {
+            background-color: #f8fafd; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px;
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 25px;
+        }
+        .canvas-info-item { display: flex; flex-direction: column; }
+        .canvas-info-label { font-size: 10px; color: #7f8c8d; text-transform: uppercase; font-weight: 800; margin-bottom: 4px; }
+        .canvas-info-value { font-size: 14px; font-weight: 700; color: #2c3e50; }
+        .canvas-section-title { color: #27c4b4; font-size: 18px; font-weight: 800; margin-bottom: 15px; border-bottom: 1px solid #edf2f7; padding-bottom: 5px; }
+        .canvas-list { margin-bottom: 25px; }
+        .canvas-list-item { margin-bottom: 15px; }
+        .canvas-med-title { font-size: 16px; font-weight: 800; color: #2c3e50; display: flex; justify-content: space-between; }
+        .canvas-med-qty { font-size: 14px; font-weight: normal; color: #34495e; }
+        .canvas-med-instructions { font-size: 14px; color: #555; margin-top: 5px; padding-left: 15px; border-left: 3px solid #27c4b4; }
+        .canvas-footer { margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 20px; text-align: center; }
+        .canvas-vet-name { font-weight: 800; font-size: 16px; color: #2c3e50; }
+        .canvas-vet-title { font-size: 12px; color: #7f8c8d; }
     </style>
 </head>
 <body>
+
+    <div id="pantalla-bloqueo">
+        <div class="login-caja">
+            <h2>🔒 Acceso VetPlace</h2>
+            <p>Ingrese su clave para usar el generador de recetas.</p>
+            <input type="password" id="inputClave" placeholder="••••••••">
+            <button onclick="verificarClave()">Ingresar</button>
+            <p id="errorClave" style="color: #e74c3c; display: none; font-size: 14px; margin-top: 15px; font-weight: bold;">❌ Clave incorrecta</p>
+        </div>
+    </div>
 
     <div class="header-app">
         <img id="logoPreview" style="max-height: 100px; display: block; margin: auto; border-radius: 12px; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 10px;" src="" onerror="this.style.display='none'">
@@ -548,7 +661,21 @@
 
     <div class="contenedor-botones">
         <button class="btn-generar" onclick="descargarPDF()">📄 DESCARGAR PDF</button>
-        <button class="btn-compartir" onclick="compartirPDF()">📲 COMPARTIR (WhatsApp / Mail)</button>
+        <button class="btn-compartir" onclick="compartirPDF()">📲 COMPARTIR PDF</button>
+        <button class="btn-img-descargar" onclick="descargarImagen()">🖼️ DESCARGAR IMAGEN</button>
+        <button class="btn-img-compartir" onclick="compartirImagen()">📱 COMPARTIR IMAGEN</button>
+    </div>
+
+    <div class="soporte-container">
+        <h4>💡 ¿Necesitas un cambio o tienes alguna sugerencia para VetPlace?</h4>
+        <div class="fila-soporte">
+            <a href="https://wa.me/51945182445?text=Hola%20amor,%20tengo%20una%20sugerencia%20para%20el%20software%20VetPlace:" target="_blank" class="btn-soporte wa">
+                💬 Soporte por WhatsApp
+            </a>
+            <a href="mailto:luisjaramillo1098@gmail.com?subject=Sugerencia%20para%20VetPlace" class="btn-soporte mail">
+                ✉️ Enviar Correo
+            </a>
+        </div>
     </div>
 
     <div class="credito">
@@ -556,8 +683,81 @@
         luisjaramillo1098@gmail.com | 📱 945 182 445
     </div>
 
+    <div id="receta-render-area">
+        <div id="receta-canvas">
+            <div class="canvas-header">
+                <img id="canvasLogo" src="" style="display: none;">
+                <div id="canvasTitle" class="canvas-title">RECETA MÉDICA</div>
+            </div>
+
+            <div class="canvas-patient-info">
+                <div class="canvas-info-item"><span class="canvas-info-label">Paciente</span><span class="canvas-info-value" id="cv-paciente">-</span></div>
+                <div class="canvas-info-item"><span class="canvas-info-label">Fecha</span><span class="canvas-info-value" id="cv-fecha">-</span></div>
+                <div class="canvas-info-item"><span class="canvas-info-label">Médico</span><span class="canvas-info-value" id="cv-medico">-</span></div>
+                
+                <div class="canvas-info-item"><span class="canvas-info-label">Especie / Raza</span><span class="canvas-info-value" id="cv-especie">-</span></div>
+                <div class="canvas-info-item"><span class="canvas-info-label">Sexo</span><span class="canvas-info-value" id="cv-sexo">-</span></div>
+                <div class="canvas-info-item"><span class="canvas-info-label">Edad / Peso</span><span class="canvas-info-value" id="cv-edad">-</span></div>
+                
+                <div class="canvas-info-item" style="grid-column: span 2;"><span class="canvas-info-label" id="cv-lbl-diag">Diagnóstico</span><span class="canvas-info-value" id="cv-diag">-</span></div>
+                <div class="canvas-info-item"><span class="canvas-info-label" style="color: #e74c3c;">Próxima Cita</span><span class="canvas-info-value" style="color: #c0392b;" id="cv-proxima">-</span></div>
+            </div>
+
+            <div id="canvas-rx-section">
+                <div class="canvas-section-title">RP (Tratamiento Prescrito)</div>
+                <div class="canvas-list" id="cv-lista-med">
+                    </div>
+            </div>
+
+            <div id="canvas-ex-section" style="display: none;">
+                <div class="canvas-section-title">Órdenes / Exámenes</div>
+                <div class="canvas-list" id="cv-lista-ex">
+                    </div>
+            </div>
+
+            <div class="canvas-footer">
+                <div class="canvas-vet-name" id="cv-footer-vet"></div>
+                <div class="canvas-vet-title">Médico Veterinario</div>
+                <div style="font-size: 10px; color: #95a5a6; margin-top: 15px;">
+                    IMPORTANTE: La cita de CONTROL se realiza en un plazo máximo de 7 días calendarios. Pasado este tiempo, se considerará como una nueva consulta.
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
-        // --- LOGO LOCALSTORAGE ---
+        // --- LÓGICA DE BLOQUEO DE PANTALLA ---
+        document.body.classList.add('bloqueado'); // Bloquea el scroll al inicio
+
+        function verificarClave() {
+            // La clave "" está codificada en Base64
+            const claveCodificada = "YmFsdTIwMjY="; 
+            
+            const intento = document.getElementById('inputClave').value;
+            
+            // btoa() codifica lo que escribe el usuario para compararlo
+            if(btoa(intento) === claveCodificada) {
+                document.getElementById('pantalla-bloqueo').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('pantalla-bloqueo').style.display = 'none';
+                    document.body.classList.remove('bloqueado');
+                }, 300);
+            } else {
+                document.getElementById('errorClave').style.display = 'block';
+                document.getElementById('inputClave').value = '';
+                document.getElementById('inputClave').focus();
+            }
+        }
+
+        // Permite presionar la tecla "Enter" para ingresar sin usar el mouse
+        document.getElementById('inputClave').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                verificarClave();
+            }
+        });
+
+        // --- LÓGICA ORIGINAL DE TU APP (Logo, DB, Interfaz) ---
         function guardarLogo(event) {
             const file = event.target.files[0];
             if (file) {
@@ -569,11 +769,18 @@
         function mostrarLogoUi() {
             const base64 = localStorage.getItem('vetplace_logo');
             const img = document.getElementById('logoPreview');
-            if (base64) { img.src = base64; img.style.display = 'block'; }
-            else { img.style.display = 'none'; }
+            const canvasImg = document.getElementById('canvasLogo');
+            if (base64) { 
+                img.src = base64; img.style.display = 'block'; 
+                canvasImg.src = base64; canvasImg.style.display = 'block';
+            }
+            else { 
+                img.style.display = 'none'; 
+                canvasImg.style.display = 'none';
+                document.getElementById('canvasTitle').style.textAlign = 'left';
+            }
         }
 
-        // --- BASE DE DATOS DE MEDICAMENTOS ---
         const medicamentosBD = [
             "DOXITEL 100 MG","DOXITEL 200 MG","CEFAVET 300 MG","CEFAVET 600 MG",
             "CLINDAVET 75 MG","CLINDAVET 150 MG","HIGACURE","ALERFLAM",
@@ -585,7 +792,7 @@
             "PORTIL CREMA","CRAMA 6A","SUPER CHEVINAL JARABE","OTIFLEX C SPRAY",
             "ECAOTIC SPRAY"
         ];
-
+        
         function cargarMedicamentos() {
             const select = document.getElementById('selectMedicina');
             select.innerHTML = '';
@@ -835,7 +1042,12 @@
             examenes.splice(i,1); renderExams();
         }
 
-        // --- GENERACIÓN DE PDF ---
+        function obtenerNombreArchivo(extension = 'pdf') {
+            const m=document.getElementById('nombreMascota').value.toUpperCase()||'Mascota';
+            return `Receta_${m}_VetPlace.${extension}`;
+        }
+
+        // --- GENERACIÓN DE PDF ORIGINAL ---
         function crearDocumentoPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -957,14 +1169,9 @@
             return doc;
         }
 
-        function obtenerNombreArchivo() {
-            const m=document.getElementById('nombreMascota').value.toUpperCase()||'Mascota';
-            return `Receta_${m}_VetPlace.pdf`;
-        }
-
         function descargarPDF() {
             try {
-                crearDocumentoPDF().save(obtenerNombreArchivo());
+                crearDocumentoPDF().save(obtenerNombreArchivo('pdf'));
             } catch(e) {
                 alert("Error al generar PDF: " + e.message);
                 console.error(e);
@@ -975,18 +1182,149 @@
             try {
                 const doc=crearDocumentoPDF();
                 const blob=doc.output('blob');
-                const file=new File([blob],obtenerNombreArchivo(),{type:'application/pdf'});
+                const file=new File([blob],obtenerNombreArchivo('pdf'),{type:'application/pdf'});
                 const m=document.getElementById('nombreMascota').value.toUpperCase()||'Mascota';
                 if(navigator.canShare&&navigator.canShare({files:[file]})){
                     await navigator.share({files:[file],title:`Receta Veterinaria - ${m}`,text:`Hola, adjuntamos la receta médica veterinaria de ${m} desde VetPlace.`});
                 } else {
                     alert("Tu dispositivo no soporta compartir directamente. Se descargará el PDF.");
-                    doc.save(obtenerNombreArchivo());
+                    doc.save(obtenerNombreArchivo('pdf'));
                 }
             } catch(e) {
                 if(e.name!=='AbortError') { alert("Error: " + e.message); console.error(e); }
             }
         }
+
+        // ==========================================
+        // NUEVA FUNCIONALIDAD: GENERACIÓN DE IMAGEN
+        // ==========================================
+        function prepararPlantillaImagen() {
+            // Obtener valores del formulario
+            const m = document.getElementById('nombreMascota').value.toUpperCase() || 'NO ESPECIFICADO';
+            const esp = document.getElementById('especie').value.toUpperCase();
+            const sexo = document.getElementById('sexo').value.toUpperCase();
+            const peso = document.getElementById('peso').value;
+            const raza = (document.getElementById('selectRaza').value==='OTRO')?document.getElementById('inputOtroRaza').value.toUpperCase():document.getElementById('selectRaza').value.toUpperCase();
+            const edad = (document.getElementById('selectEdad').value==='OTRO')?document.getElementById('inputOtroEdad').value.toUpperCase():document.getElementById('selectEdad').value.toUpperCase();
+            const diag = (document.getElementById('selectDiagnostico').value==='OTRO')?document.getElementById('inputOtroDiagnostico').value.toUpperCase():document.getElementById('selectDiagnostico').value.toUpperCase();
+            const tipoDiag = document.getElementById('tipoDiagnostico').value;
+            const vet = (document.getElementById('selectVeterinario').value==='OTRO')?document.getElementById('inputOtroVeterinario').value:document.getElementById('selectVeterinario').value;
+            const fecha = document.getElementById('fecha').value ? document.getElementById('fecha').value.split('-').reverse().join('/') : '';
+            const prox = document.getElementById('proxCita').value ? document.getElementById('proxCita').value.split('-').reverse().join('/') : '-';
+
+            // Inyectar en el Canvas HTML
+            document.getElementById('cv-paciente').textContent = m;
+            document.getElementById('cv-fecha').textContent = fecha;
+            document.getElementById('cv-medico').textContent = vet || 'No especificado';
+            document.getElementById('cv-especie').textContent = `${esp} / ${raza || '-'}`;
+            document.getElementById('cv-sexo').textContent = sexo;
+            document.getElementById('cv-edad').textContent = `${edad || '-'} / ${peso ? peso + ' Kg' : '-'}`;
+            document.getElementById('cv-lbl-diag').textContent = `DIAGNÓSTICO ${tipoDiag}`;
+            document.getElementById('cv-diag').textContent = diag || '-';
+            document.getElementById('cv-proxima').textContent = prox;
+            document.getElementById('cv-footer-vet').textContent = vet;
+
+            // Inyectar Tratamiento
+            const listaMed = document.getElementById('cv-lista-med');
+            listaMed.innerHTML = '';
+            if (tratamiento.length === 0) {
+                listaMed.innerHTML = '<div style="color: #7f8c8d; font-style: italic;">Sin medicación prescrita.</div>';
+            } else {
+                tratamiento.forEach((med, i) => {
+                    listaMed.innerHTML += `
+                        <div class="canvas-list-item">
+                            <div class="canvas-med-title">
+                                <span>${i+1}. ${med.med.toUpperCase()} (${med.pres})</span>
+                                ${med.totalStr ? `<span class="canvas-med-qty">Cant: ${med.totalStr}</span>` : ''}
+                            </div>
+                            <div class="canvas-med-instructions">
+                                <strong>Aplicación:</strong> ${med.tDos} ${med.frec} ${med.dias}.<br>
+                                ${med.inst ? `<em>Nota: ${med.inst}</em>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Inyectar Exámenes
+            const seccionEx = document.getElementById('canvas-ex-section');
+            const listaEx = document.getElementById('cv-lista-ex');
+            if (examenes.length > 0) {
+                seccionEx.style.display = 'block';
+                listaEx.innerHTML = '';
+                examenes.forEach((ex, i) => {
+                    listaEx.innerHTML += `
+                        <div class="canvas-list-item">
+                            <div class="canvas-med-title">
+                                <span>${i+1}. ${ex.ex}</span>
+                                ${ex.fecha ? `<span class="canvas-med-qty" style="color:#c0392b;">Para el: ${ex.fecha}</span>` : ''}
+                            </div>
+                            ${ex.ins ? `<div class="canvas-med-instructions">${ex.ins}</div>` : ''}
+                        </div>
+                    `;
+                });
+            } else {
+                seccionEx.style.display = 'none';
+            }
+        }
+
+        async function capturarRecetaImagen() {
+            prepararPlantillaImagen();
+            const element = document.getElementById('receta-canvas');
+            
+            // Usamos html2canvas
+            const canvas = await html2canvas(element, {
+                scale: 2, // Mejor resolución
+                useCORS: true, // Para cargar el logo correctamente si es externo
+                backgroundColor: '#ffffff'
+            });
+            
+            return canvas;
+        }
+
+        async function descargarImagen() {
+            try {
+                const canvas = await capturarRecetaImagen();
+                const image = canvas.toDataURL("image/png");
+                
+                const link = document.createElement('a');
+                link.href = image;
+                link.download = obtenerNombreArchivo('png');
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch(e) {
+                alert("Error al generar imagen: " + e.message);
+                console.error(e);
+            }
+        }
+
+        async function compartirImagen() {
+            try {
+                const canvas = await capturarRecetaImagen();
+                
+                canvas.toBlob(async (blob) => {
+                    const m = document.getElementById('nombreMascota').value.toUpperCase() || 'Mascota';
+                    const file = new File([blob], obtenerNombreArchivo('png'), { type: 'image/png' });
+                    
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        await navigator.share({
+                            files: [file],
+                            title: `Receta Veterinaria - ${m}`,
+                            text: `Hola, adjuntamos la receta médica veterinaria de ${m} desde VetPlace.`
+                        });
+                    } else {
+                        alert("Tu dispositivo/navegador no soporta compartir imágenes directamente. Se descargará en su lugar.");
+                        descargarImagen();
+                    }
+                }, 'image/png');
+                
+            } catch(e) {
+                if(e.name !== 'AbortError') { alert("Error al compartir: " + e.message); console.error(e); }
+            }
+        }
+
     </script>
 
 </body></html>
